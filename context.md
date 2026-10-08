@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Build a simple system where students can log in, see their subjects and grades, and review their average. The frontend communicates with backend APIs. MongoDB is an optional database; do not make database availability a requirement unless the team decides to use it.
+Build a simple system where students can log in, see their subjects and grades, and review their average. The frontend communicates with backend APIs. SQLite is the selected database.
 
 ## Team and ownership
 
@@ -52,7 +52,7 @@ The team has five developers: one frontend developer and four backend developers
 
 - **Backend:** Node.js with Express, written in JavaScript ES modules.
 - **Frontend:** React with JavaScript and Vite.
-- **Database:** MongoDB may be used, but is optional. Keep the app able to run without a database until the team opts in.
+- **Database:** SQLite, using `better-sqlite3` for the Node.js driver.
 - **Backend organization:** `backend/src/server.js` starts Express; `routes/` maps API paths; `validators/` checks request data; `controllers/` handles HTTP input/output; `services/` holds business logic; `models/` contains persistence models when needed.
 - **Frontend entry:** `frontend/src/main.jsx` mounts the app and `frontend/src/App.jsx` is the root component.
 - **Development workflow:** npm workspaces; use the root commands `npm run dev`, `npm run lint`, `npm test`, and `npm run build`.
@@ -71,14 +71,21 @@ The backend files currently contain minimal JavaScript scaffolding and TODOs. Ad
 
 Do not invent these details when implementing a task. Ask the team or use an explicitly approved project decision:
 
-- Whether MongoDB will be used; if so, connection setup, schemas, identifiers, and seed data.
+- Shared SQLite schema and migration strategy for students, subjects, and grades.
 - Login request/response fields and authentication mechanism, token/session behavior, and token lifetime.
-- API route paths, HTTP status codes, response envelope, and error format.
+- Remaining API route paths, HTTP status codes, response envelopes, and error formats (the subject-list API is documented below).
 - Student listing access rules and whether listing is required by the student-facing UI.
 - Subject search fields, matching behavior, and pagination, if needed.
 - Allowed grade scale, accepted value format, and rules for invalid or missing grades.
 - Average calculation rules, including rounding and how missing grades are handled.
 - Which authenticated users may create or update grades and what authorization checks apply.
+
+## Approved subject list API (SUB-BE-02)
+
+- `GET /api/subjects` returns HTTP 200 and `{ "success": true, "message": "Subjects retrieved successfully", "data": [...] }`.
+- Each subject contains `id`, `name`, `instructor`, and `section`; an empty table returns an empty `data` array.
+- Database failures return HTTP 500 with a generic error message and no internal details.
+- The subjects table uses an integer primary key and required text columns for `name`, `instructor`, and `section`.
 
 ## Guidance for coding agents
 

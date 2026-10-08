@@ -1,3 +1,3 @@
 # Models
 
-Reserved for persistence models when a database is selected. MongoDB and Mongoose are not configured in this starter.
+Persistence models use the shared SQLite connection in `src/db/connection.js`. Database files are stored under `backend/data/` and must not be committed.

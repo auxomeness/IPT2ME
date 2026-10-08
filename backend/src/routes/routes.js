@@ -1,7 +1,8 @@
 import { Router } from "express";
+import { getSubjects } from "../controllers/subjectController.js";
 
 const router = Router();
 
-// TODO: Define API routes here and connect them to their controllers.
+router.get("/subjects", getSubjects);
 
 export default router;
