@@ -1,8 +1,7 @@
+import { sendError } from "../utils/apiResponse.js";
+
 export function notFoundHandler(_request, response) {
-  return response.status(404).json({
-    success: false,
-    message: "Route not found",
-  });
+  return sendError(response, 404, "Route not found");
 }
 
 export function errorHandler(error, _request, response, _next) {
@@ -19,8 +18,5 @@ export function errorHandler(error, _request, response, _next) {
         ? "Invalid JSON request body"
         : error?.message || "Request failed";
 
-  return response.status(status).json({
-    success: false,
-    message,
-  });
+  return sendError(response, status, message);
 }

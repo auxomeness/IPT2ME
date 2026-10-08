@@ -21,6 +21,7 @@ describe("HTTP error middleware", () => {
     expect(response.json).toHaveBeenCalledWith({
       success: false,
       message: "Route not found",
+      data: null,
     });
   });
 
@@ -33,6 +34,7 @@ describe("HTTP error middleware", () => {
     expect(response.json).toHaveBeenCalledWith({
       success: false,
       message: "Invalid grade",
+      data: null,
     });
   });
 
@@ -50,6 +52,7 @@ describe("HTTP error middleware", () => {
     expect(response.json).toHaveBeenCalledWith({
       success: false,
       message: "Invalid JSON request body",
+      data: null,
     });
   });
 
@@ -62,6 +65,7 @@ describe("HTTP error middleware", () => {
     expect(response.json).toHaveBeenCalledWith({
       success: false,
       message: "Internal server error",
+      data: null,
     });
   });
 });
