@@ -65,7 +65,7 @@ The backend files currently contain minimal JavaScript scaffolding and TODOs. Ad
 - Student login, password hashing, and authentication (Developer 2) must coordinate with grade endpoint protection (Developer 5).
 - Grade creation, updates, value validation, and invalid-grade prevention (Developers 4 and 5) overlap and should share one agreed grading policy.
 - Subject listing, lookup, and search (Developer 3) should agree on search parameters and response shape with the frontend developer.
-- The API response format and error handling should be agreed across backend owners because Developer 5 owns standardization.
+- Backend JSON responses use `{ success, message, data }`; errors use `data: null`. Use the shared response helpers in `backend/src/utils/apiResponse.js`.
 
 ## Decisions still to make
 
@@ -73,7 +73,7 @@ Do not invent these details when implementing a task. Ask the team or use an exp
 
 - Whether MongoDB will be used; if so, connection setup, schemas, identifiers, and seed data.
 - Login request/response fields and authentication mechanism, token/session behavior, and token lifetime.
-- API route paths, HTTP status codes, response envelope, and error format.
+- API route paths and HTTP status codes.
 - Student listing access rules and whether listing is required by the student-facing UI.
 - Subject search fields, matching behavior, and pagination, if needed.
 - Allowed grade scale, accepted value format, and rules for invalid or missing grades.

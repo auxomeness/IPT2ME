@@ -30,6 +30,7 @@ describe("grade validation", () => {
     expect(response.json).toHaveBeenCalledWith({
       success: false,
       message: "Grade must be a finite number",
+      data: null,
     });
     expect(next).not.toHaveBeenCalled();
   });
