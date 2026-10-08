@@ -1,3 +1,5 @@
+import { isValidGrade } from "../validators/gradeValidator.js";
+
 function run(database, sql, parameters = []) {
   return new Promise((resolve, reject) => {
     database.run(sql, parameters, function onRun(error) {
@@ -60,7 +62,11 @@ export function createGradeModel(database) {
         id INTEGER PRIMARY KEY,
         student_id INTEGER NOT NULL,
         subject_id INTEGER NOT NULL,
-        grade REAL NOT NULL,
+        grade REAL NOT NULL CHECK (
+          typeof(grade) IN ('integer', 'real')
+          AND grade <= 1.7976931348623157e308
+          AND grade >= -1.7976931348623157e308
+        ),
         FOREIGN KEY (student_id) REFERENCES students(id),
         FOREIGN KEY (subject_id) REFERENCES subjects(id)
       )`,
@@ -68,6 +74,8 @@ export function createGradeModel(database) {
   }
 
   async function create({ student_id, subject_id, grade }) {
+    assertValidGrade(grade);
+
     const result = await run(
       database,
       `INSERT INTO grades (student_id, subject_id, grade)
@@ -91,6 +99,8 @@ export function createGradeModel(database) {
   }
 
   async function update(id, grade) {
+    assertValidGrade(grade);
+
     const result = await run(
       database,
       "UPDATE grades SET grade = ? WHERE id = ?",
@@ -111,4 +121,10 @@ export function createGradeModel(database) {
     findByStudentId,
     update,
   });
+}
+
+function assertValidGrade(grade) {
+  if (!isValidGrade(grade)) {
+    throw new TypeError("Grade must be a finite number");
+  }
 }
