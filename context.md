@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Build a simple system where students can log in, see their subjects and grades, and review their average. The frontend communicates with backend APIs. MongoDB is an optional database; do not make database availability a requirement unless the team decides to use it.
+Build a simple system where students can log in, see their subjects and grades, and review their average. The frontend communicates with backend APIs. SQLite is the selected database.
 
 ## Team and ownership
 
@@ -52,7 +52,7 @@ The team has five developers: one frontend developer and four backend developers
 
 - **Backend:** Node.js with Express, written in JavaScript ES modules.
 - **Frontend:** React with JavaScript and Vite.
-- **Database:** MongoDB may be used, but is optional. Keep the app able to run without a database until the team opts in.
+- **Database:** SQLite, using the existing `better-sqlite3` connection helper for subject lookup.
 - **Backend organization:** `backend/src/server.js` starts Express; `routes/` maps API paths; `validators/` checks request data; `controllers/` handles HTTP input/output; `services/` holds business logic; `models/` contains persistence models when needed.
 - **Frontend entry:** `frontend/src/main.jsx` mounts the app and `frontend/src/App.jsx` is the root component.
 - **Development workflow:** npm workspaces; use the root commands `npm run dev`, `npm run lint`, `npm test`, and `npm run build`.
@@ -79,6 +79,12 @@ Do not invent these details when implementing a task. Ask the team or use an exp
 - Allowed grade scale, accepted value format, and rules for invalid or missing grades.
 - Average calculation rules, including rounding and how missing grades are handled.
 - Which authenticated users may create or update grades and what authorization checks apply.
+
+## Subject lookup API (SUB-BE-05)
+
+- `GET /api/subjects/:id` looks up one subject by its positive integer ID.
+- A valid ID returns HTTP 200 with `{ "success": true, "message": "Subject retrieved successfully", "data": { ... } }`.
+- Malformed IDs return HTTP 400; valid IDs with no matching subject return HTTP 404.
 
 ## Guidance for coding agents
 
