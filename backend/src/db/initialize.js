@@ -6,4 +6,13 @@ export function initializeDatabase(database) {
       password_hash TEXT NOT NULL
     )
   `);
+
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS subjects (
+      id INTEGER PRIMARY KEY,
+      name TEXT NOT NULL,
+      instructor TEXT NOT NULL,
+      section TEXT NOT NULL
+    )
+  `);
 }

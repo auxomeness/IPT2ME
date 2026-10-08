@@ -1,3 +1,3 @@
 # Models
 
-Reserved for persistence models when a database is selected. MongoDB and Mongoose are not configured in this starter.
+Persistence models use SQLite. Database initialization is in `src/db/initialize.js`; local database files belong under `backend/data/` and must not be committed.

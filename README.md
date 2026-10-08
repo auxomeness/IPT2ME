@@ -1,6 +1,6 @@
 # IPT2ME
 
-An npm workspace starter for the Simple Grade Management System. It uses an Express backend and React + Vite frontend, written in JavaScript. It provides the project structure and basic startup configuration without sample routes, business logic, database models, or demo UI. MongoDB is optional. See [context.md](context.md) for the team assignments and project decisions.
+The Simple Grade Management System uses an Express backend, React + Vite frontend, and SQLite database. See [context.md](context.md) for the team assignments and project decisions.
 
 ## Requirements
 
@@ -45,7 +45,7 @@ npm ci
 npm run dev
 ```
 
-The backend runs at `http://localhost:3000`; the Vite app runs at `http://localhost:5173`. No API routes or frontend screens are included yet; add your features in the provided structure.
+The backend runs at `http://localhost:3000`; the Vite app runs at `http://localhost:5173`. `GET /api/subjects` lists subjects and accepts an optional `search` query parameter.
 
 Environment files are optional for local defaults. To customize settings, copy `backend/.env.example` to `backend/.env` and `frontend/.env.example` to `frontend/.env` (PowerShell: use `Copy-Item backend/.env.example backend/.env` and `Copy-Item frontend/.env.example frontend/.env`).
 
@@ -179,7 +179,7 @@ IPT2ME/
 │   │   │   └── controller.js         # HTTP request/response handling
 │   │   ├── models/
 │   │   │   ├── model.js               # Optional persistence model starting point
-│   │   │   └── README.md              # Notes on adding MongoDB later
+│   │   │   └── README.md              # Persistence model notes
 │   │   ├── routes/
 │   │   │   └── routes.js              # API route definitions
 │   │   ├── services/
@@ -213,7 +213,7 @@ When you add an API feature, keep each layer focused:
 2. **Validator** checks that request parameters and body data have the expected shape.
 3. **Controller** reads the request, calls the service, and builds the HTTP response.
 4. **Service** implements the feature's business rules. It can call a model when persistence is needed.
-5. **Model** defines how application data is stored and retrieved. MongoDB models belong here if MongoDB is selected.
+5. **Model** defines how application data is stored and retrieved from SQLite.
 
 The starter files contain valid JavaScript modules and short TODO stubs. The empty router is mounted under `/api`, so the Express app is ready for routes but exposes no feature endpoints yet. Add application code directly to these files, then split them into resource-specific files as the project grows. There are no sample business rules or active database connections.
 
@@ -242,6 +242,6 @@ username, and a `password_hash` column. Password hashing and authentication
 belong to later tickets; callers must pass a hash, not a plaintext password,
 to the model. Run `npm test` from the repository root to check the model.
 
-The student model currently uses `better-sqlite3`, while the grade model uses
-`sqlite3`. The team should agree on a shared database connection before
-connecting these models through API routes.
+The subject search and student models currently use `better-sqlite3`, while
+the grade model uses `sqlite3`. Agree on a shared database connection before
+connecting the grade model through API routes.
