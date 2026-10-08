@@ -1,3 +1,7 @@
+export function isValidGrade(grade) {
+  return typeof grade === "number" && Number.isFinite(grade);
+}
+
 export function validateGradeInput(request, response, next) {
   const grade = request.body?.grade;
 
@@ -8,7 +12,7 @@ export function validateGradeInput(request, response, next) {
     });
   }
 
-  if (typeof grade !== "number" || !Number.isFinite(grade)) {
+  if (!isValidGrade(grade)) {
     return response.status(400).json({
       success: false,
       message: "Grade must be a finite number",
