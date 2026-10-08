@@ -1,7 +1,13 @@
 import { Router } from "express";
+import { createStudentController } from "../controllers/studentController.js";
+import { createAuthenticateToken } from "../middleware/authMiddleware.js";
 
-const router = Router();
+export default function createRoutes({ studentService, jwtSecret }) {
+  const router = Router();
+  const authenticateToken = createAuthenticateToken(jwtSecret);
+  const studentController = createStudentController(studentService);
 
-// TODO: Define API routes here and connect them to their controllers.
+  router.get("/students", authenticateToken, studentController.list);
 
-export default router;
+  return router;
+}
