@@ -1,7 +1,19 @@
 import { Router } from "express";
+import { createGetSubjectController } from "../controllers/subjectController.js";
+import { createSubjectService } from "../services/subjectService.js";
+import { validateSubjectId } from "../validators/subjectLookupValidator.js";
 
-const router = Router();
+export function createRoutes(database) {
+  const router = Router();
+  const subjectService = createSubjectService(database);
 
-// TODO: Define API routes here and connect them to their controllers.
+  router.get(
+    "/subjects/:id",
+    validateSubjectId,
+    createGetSubjectController(subjectService),
+  );
 
-export default router;
+  return router;
+}
+
+export default createRoutes;
