@@ -234,6 +234,14 @@ The starter files contain valid JavaScript modules and short TODO stubs. The emp
 
 The API uses `PORT` and `FRONTEND_ORIGIN`. The frontend can use `VITE_API_URL` when it starts making API requests. Copy each workspace's `.env.example` to `.env` only when you want to override the local defaults.
 
-## Adding MongoDB later
+## Student model
 
-Install Mongoose when the project needs persistence, add a `MONGODB_URI` to the backend environment, implement connection lifecycle handling, and add schemas under `backend/src/models/`. The starter does not connect to a database.
+STU-BE-01 adds a SQLite `students` table and a persistence model in
+`backend/src/models/studentModel.js`. Students have an integer ID, a unique
+username, and a `password_hash` column. Password hashing and authentication
+belong to later tickets; callers must pass a hash, not a plaintext password,
+to the model. Run `npm test` from the repository root to check the model.
+
+The student model currently uses `better-sqlite3`, while the grade model uses
+`sqlite3`. The team should agree on a shared database connection before
+connecting these models through API routes.
