@@ -6,5 +6,7 @@ coverage/
 !.env.example
 backend/data/*.db
 backend/data/*.db-*
+backend/data/*.sqlite
+backend/data/*.sqlite-*
 .DS_Store
 npm-debug.log*
