@@ -211,6 +211,10 @@ h1 {
   text-decoration: underline;
 }
 
+.average-sample-link {
+  margin-top: 10px;
+}
+
 .sample-link:focus-visible {
   outline: 3px solid rgb(54 129 94 / 35%);
   outline-offset: 3px;
@@ -360,6 +364,139 @@ h1 {
   margin: 0 0 12px;
   color: #78857d;
   font-size: 12px;
+}
+
+.average-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 8% 12%, rgb(222 239 230 / 54%), transparent 34%),
+    #f5f8f6;
+}
+
+.average-content {
+  width: min(100% - 40px, 760px);
+  margin: 0 auto;
+  padding: 66px 0 48px;
+}
+
+.average-heading {
+  margin-bottom: 24px;
+}
+
+.average-page h1 {
+  margin: 0;
+  color: #20352c;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 700;
+  letter-spacing: -1.2px;
+  line-height: 1.2;
+}
+
+.average-heading .page-description {
+  margin-top: 10px;
+}
+
+.average-sample-note {
+  margin: 0 0 16px;
+  color: #78857d;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.average-summary {
+  display: flex;
+  min-height: 194px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  border: 1px solid #dcebe1;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #fff, #f3f8f4);
+  box-shadow: 0 5px 18px rgb(32 58 45 / 5%);
+  text-align: center;
+}
+
+.average-summary-label {
+  color: #54816a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.average-value {
+  margin-top: 8px;
+  color: #26724f;
+  font-size: clamp(44px, 9vw, 58px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 1.1;
+}
+
+.average-summary-caption {
+  margin-top: 6px;
+  color: #7b8980;
+  font-size: 12px;
+}
+
+.average-breakdown {
+  margin-top: 30px;
+}
+
+.average-breakdown h2 {
+  margin: 0 0 12px;
+  color: #293a31;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.average-grade-list {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #e6ede9;
+  border-radius: 12px;
+  background: #fff;
+  list-style: none;
+}
+
+.average-grade-item {
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+  border-bottom: 1px solid #edf1ef;
+}
+
+.average-grade-item:last-child {
+  border-bottom: 0;
+}
+
+.average-grade-subject {
+  display: grid;
+  gap: 4px;
+}
+
+.average-grade-subject .subject-name {
+  color: #39483f;
+  font-size: 13px;
+}
+
+.average-grade-value {
+  color: #26724f;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+@media (max-width: 560px) {
+  .average-content {
+    width: min(100% - 32px, 760px);
+    padding: 43px 0 34px;
+  }
 }
 
 .subject-list {

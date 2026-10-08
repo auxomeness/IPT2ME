@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 
-export default function LoginPage({ onViewSubjects }) {
+export default function LoginPage({ onViewSubjects, onViewAverage }) {
   const [notice, setNotice] = useState("");
 
   function handleSubmit(event) {
@@ -74,6 +74,13 @@ export default function LoginPage({ onViewSubjects }) {
       </section>
       <button className="sample-link" type="button" onClick={onViewSubjects}>
         View sample subjects
+      </button>
+      <button
+        className="sample-link average-sample-link"
+        type="button"
+        onClick={onViewAverage}
+      >
+        View sample average
       </button>
       <p className="page-caption">Simple Grade Management System</p>
     </main>
