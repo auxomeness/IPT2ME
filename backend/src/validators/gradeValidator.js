@@ -17,3 +17,19 @@ export function validateGradeInput(request, response, next) {
 
   return next();
 }
+
+export function validateCreateGradeInput(request, response, next) {
+  for (const field of ["student_id", "subject_id"]) {
+    const value = request.body?.[field];
+
+    if (!Number.isInteger(value) || value <= 0) {
+      return response.status(400).json({
+        success: false,
+        message: `${field} must be a positive integer`,
+        errors: [],
+      });
+    }
+  }
+
+  return validateGradeInput(request, response, next);
+}
