@@ -52,12 +52,12 @@ The team has five developers: one frontend developer and four backend developers
 
 - **Backend:** Node.js with Express, written in JavaScript ES modules.
 - **Frontend:** React with JavaScript and Vite.
-- **Database:** SQLite, using the existing `better-sqlite3` connection helper for subject lookup.
+- **Database:** SQLite at `backend/data/grades.db` by default. The student and subject models use `better-sqlite3`; grade models use `sqlite3` against the same file.
 - **Backend organization:** `backend/src/server.js` starts Express; `routes/` maps API paths; `validators/` checks request data; `controllers/` handles HTTP input/output; `services/` holds business logic; `models/` contains persistence models when needed.
 - **Frontend entry:** `frontend/src/main.jsx` mounts the app and `frontend/src/App.jsx` is the root component.
 - **Development workflow:** npm workspaces; use the root commands `npm run dev`, `npm run lint`, `npm test`, and `npm run build`.
 
-The backend files currently contain minimal JavaScript scaffolding and TODOs. Add feature behavior in the appropriate layer. Keep the frontend and backend in their assigned ownership areas and coordinate API contracts between developers.
+The backend APIs and student-facing UI are implemented. Keep changes in the assigned ownership areas and coordinate any changes to the shared API contracts.
 
 ## Feature dependencies and coordination
 
@@ -67,18 +67,22 @@ The backend files currently contain minimal JavaScript scaffolding and TODOs. Ad
 - Subject listing, lookup, and search (Developer 3) should agree on search parameters and response shape with the frontend developer.
 - Backend JSON responses use `{ success, message, data }`; errors use `data: null`. Use the shared response helpers in `backend/src/utils/apiResponse.js`.
 
+## Decisions made during implementation
+
+- Login accepts `username` and `password` and returns a one-hour HS256 bearer token. Set `JWT_SECRET` to a private value at least 32 bytes long.
+- Student listing is available to authenticated users with the `student` role.
+- Subject listing is `GET /api/subjects`; optional `q` searches name, instructor, and section using case-insensitive substring matching. No pagination is implemented.
+- Grade reads are available to authenticated students for their own records; instructor and admin accounts can read student grades. Only instructor and admin accounts can create or update grades.
+- Grades must be finite numbers. No grading range has been set.
+- The average is the arithmetic mean of recorded grades, rounded to two decimal places. No grades yields a null average and count zero.
+- Subject input validation requires non-empty `name`, `instructor`, and `section` strings.
+
 ## Decisions still to make
 
 Do not invent these details when implementing a task. Ask the team or use an explicitly approved project decision:
 
-- Whether MongoDB will be used; if so, connection setup, schemas, identifiers, and seed data.
-- Login request/response fields and authentication mechanism, token/session behavior, and token lifetime.
-- API route paths and HTTP status codes.
-- Student listing access rules and whether listing is required by the student-facing UI.
-- Subject search fields, matching behavior, and pagination, if needed.
-- Allowed grade scale, accepted value format, and rules for invalid or missing grades.
-- Average calculation rules, including rounding and how missing grades are handled.
-- Which authenticated users may create or update grades and what authorization checks apply.
+- Allowed grading scale or range beyond finite numeric values.
+- Account provisioning for student, instructor, and admin roles. There is no public registration endpoint.
 
 ## Subject lookup API (SUB-BE-05)
 

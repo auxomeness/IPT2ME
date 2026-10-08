@@ -22,7 +22,7 @@ function createRequest(token) {
 
 describe("student authentication middleware", () => {
   it("attaches the student ID from a valid bearer token", () => {
-    const token = jwt.sign({ sub: "17" }, jwtSecret, {
+    const token = jwt.sign({ sub: "17", role: "student" }, jwtSecret, {
       algorithm: "HS256",
       expiresIn: "1h"
     });
@@ -32,7 +32,7 @@ describe("student authentication middleware", () => {
 
     createStudentAuthenticator(jwtSecret)(request, response, next);
 
-    expect(request.user).toEqual({ id: 17 });
+    expect(request.user).toEqual({ id: 17, role: "student" });
     expect(next).toHaveBeenCalledOnce();
     expect(response.status).not.toHaveBeenCalled();
   });
@@ -40,10 +40,10 @@ describe("student authentication middleware", () => {
   it.each([
     ["missing token", undefined],
     ["malformed token", "not-a-jwt"],
-    ["expired token", jwt.sign({ sub: "17" }, jwtSecret, { expiresIn: -1 })],
+    ["expired token", jwt.sign({ sub: "17", role: "student" }, jwtSecret, { expiresIn: -1 })],
     [
       "token signed with another secret",
-      jwt.sign({ sub: "17" }, "different-secret-with-at-least-32-bytes")
+      jwt.sign({ sub: "17", role: "student" }, "different-secret-with-at-least-32-bytes")
     ],
     ["token without a student ID", jwt.sign({ role: "student" }, jwtSecret)]
   ])("rejects a %s", (_description, token) => {

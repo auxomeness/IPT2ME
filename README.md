@@ -1,6 +1,6 @@
 # IPT2ME
 
-An npm workspace starter for the Simple Grade Management System. It uses an Express backend and React + Vite frontend, written in JavaScript. It provides the project structure and basic startup configuration without sample routes, business logic, database models, or demo UI. MongoDB is optional. See [context.md](context.md) for the team assignments and project decisions.
+The Simple Grade Management System prototype uses an Express backend, a React + Vite frontend, and SQLite. Students can sign in to view subjects, grades, and their average. See [context.md](context.md) for API behavior and role rules.
 
 ## Requirements
 
@@ -42,12 +42,13 @@ Then install dependencies and run both apps:
 
 ```bash
 npm ci
+cp backend/.env.example backend/.env
 npm run dev
 ```
 
-The backend runs at `http://localhost:3000`; the Vite app runs at `http://localhost:5173`. No API routes or frontend screens are included yet; add your features in the provided structure.
+Before starting, replace the sample `JWT_SECRET` in `backend/.env` with a private value of at least 32 bytes. The backend runs at `http://localhost:3000`; the Vite app runs at `http://localhost:5173`. The database is created at `backend/data/grades.db` on first run.
 
-Environment files are optional for local defaults. To customize settings, copy `backend/.env.example` to `backend/.env` and `frontend/.env.example` to `frontend/.env` (PowerShell: use `Copy-Item backend/.env.example backend/.env` and `Copy-Item frontend/.env.example frontend/.env`).
+To customize the frontend API URL, copy `frontend/.env.example` to `frontend/.env`. In PowerShell, use `Copy-Item backend/.env.example backend/.env` and `Copy-Item frontend/.env.example frontend/.env`.
 
 ### If `npm ci` fails
 
@@ -176,17 +177,30 @@ IPT2ME/
 ├── backend/
 │   ├── src/
 │   │   ├── controllers/
-│   │   │   └── controller.js         # HTTP request/response handling
+│   │   │   ├── gradeController.js
+│   │   │   ├── gradeAverageController.js
+│   │   │   ├── studentController.js
+│   │   │   └── subjectController.js
 │   │   ├── models/
-│   │   │   ├── model.js               # Optional persistence model starting point
+│   │   │   ├── gradeModel.js
+│   │   │   ├── gradeAverageModel.js
+│   │   │   ├── studentModel.js
+│   │   │   ├── Subject.js
 │   │   │   └── README.md              # Notes on adding MongoDB later
 │   │   ├── routes/
-│   │   │   └── routes.js              # API route definitions
+│   │   │   ├── gradeRoutes.js
+│   │   │   ├── gradeAverageRoutes.js
+│   │   │   └── routes.js
 │   │   ├── services/
-│   │   │   └── service.js             # Business logic
+│   │   │   ├── gradeService.js
+│   │   │   ├── gradeAverageService.js
+│   │   │   ├── studentService.js
+│   │   │   └── subjectService.js
 │   │   ├── validators/
-│   │   │   └── validator.js           # Request data validation
-│   │   └── server.js        # Configure and start the Express server
+│   │   │   ├── gradeValidator.js
+│   │   │   ├── loginValidator.js
+│   │   │   └── subjectValidator.js
+│   │   └── server.js
 │   ├── .env.example         # Backend environment variable template
 │   └── package.json         # Backend dependencies and commands
 ├── frontend/
@@ -213,14 +227,14 @@ When you add an API feature, keep each layer focused:
 2. **Validator** checks that request parameters and body data have the expected shape.
 3. **Controller** reads the request, calls the service, and builds the HTTP response.
 4. **Service** implements the feature's business rules. It can call a model when persistence is needed.
-5. **Model** defines how application data is stored and retrieved. MongoDB models belong here if MongoDB is selected.
+5. **Model** defines how application data is stored and retrieved in SQLite.
 
-The starter files contain valid JavaScript modules and short TODO stubs. The empty router is mounted under `/api`, so the Express app is ready for routes but exposes no feature endpoints yet. Add application code directly to these files, then split them into resource-specific files as the project grows. There are no sample business rules or active database connections.
+The backend exposes student login/listing, subject listing/search/lookup, grade create/read/update, and student average endpoints under `/api`. Grade writes require an instructor or admin token. Student accounts are provisioned by a trusted operator; there is no public registration endpoint.
 
 ### Frontend purpose
 
 - **`main.jsx`** starts React and attaches the root component to the `root` element in `index.html`.
-- **`App.jsx`** is the empty top-level component where the app's screens can be added.
+- **`App.jsx`** owns the login session and navigation between subjects, grades, and average views.
 - **`vite.config.js`** configures Vite's React support, development server, and production build.
 
 ### Root configuration
@@ -232,16 +246,11 @@ The starter files contain valid JavaScript modules and short TODO stubs. The emp
 
 ## Environment variables
 
-The API uses `PORT` and `FRONTEND_ORIGIN`. The frontend can use `VITE_API_URL` when it starts making API requests. Copy each workspace's `.env.example` to `.env` only when you want to override the local defaults.
+The API uses `PORT`, `FRONTEND_ORIGIN`, `DATABASE_PATH`, and `JWT_SECRET`. `JWT_SECRET` is required and must contain at least 32 bytes. The frontend uses `VITE_API_URL`, defaulting to `http://localhost:3000/api`.
 
 ## Student model
 
-STU-BE-01 adds a SQLite `students` table and a persistence model in
-`backend/src/models/studentModel.js`. Students have an integer ID, a unique
-username, and a `password_hash` column. Password hashing and authentication
-belong to later tickets; callers must pass a hash, not a plaintext password,
-to the model. Run `npm test` from the repository root to check the model.
-
-The student model currently uses `better-sqlite3`, while the grade model uses
-`sqlite3`. The team should agree on a shared database connection before
-connecting these models through API routes.
+Student records have an integer ID, unique username, bcrypt password hash, and
+role (`student`, `instructor`, or `admin`). The model hashes plaintext passwords
+before storing them and never returns hashes in listing responses. Provision
+accounts through trusted application code; do not add public role selection.

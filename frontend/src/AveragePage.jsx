@@ -1,78 +1,62 @@
+import { useEffect, useState } from "react";
+import { getStudentAverage } from "./services/api.js";
 import "./App.css";
-import sampleGrades from "./sampleGrades.js";
 
-const sampleAverage =
-  sampleGrades.reduce((total, item) => total + item.grade, 0) /
-  sampleGrades.length;
+export default function AveragePage({ token, student }) {
+  const [average, setAverage] = useState(null);
+  const [gradeCount, setGradeCount] = useState(0);
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-export default function AveragePage({ onBack }) {
+  useEffect(() => {
+    let active = true;
+    setIsLoading(true);
+    setError("");
+
+    getStudentAverage(token, student.id)
+      .then((response) => {
+        if (!active) return;
+        setAverage(response.data?.average ?? null);
+        setGradeCount(response.data?.grade_count ?? 0);
+      })
+      .catch((requestError) => {
+        if (active) setError(requestError.message || "Unable to load your average.");
+      })
+      .finally(() => {
+        if (active) setIsLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [token, student.id]);
+
   return (
     <main className="average-page">
       <header className="topbar">
-        <button
-          className="subjects-brand"
-          type="button"
-          onClick={onBack}
-          aria-label="Back to sign in"
-        >
-          <span className="brand-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none">
-              <path
-                d="M4 19.5V5.8c0-.7.6-1.3 1.3-1.3H20v15H5.3c-.7 0-1.3-.6-1.3-1.3Z"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M4 17.5c0-.7.6-1.3 1.3-1.3H20M8 8h8M8 11.5h5"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                strokeLinecap="round"
-              />
-            </svg>
-          </span>
-          <span>Gradebook</span>
-        </button>
+        <span className="subjects-brand">Gradebook</span>
         <span className="portal-label">STUDENT PORTAL</span>
       </header>
-
       <section className="average-content" aria-labelledby="average-title">
         <div className="average-heading">
           <p className="subjects-eyebrow">ACADEMIC OVERVIEW</p>
           <h1 id="average-title">My average</h1>
-          <p className="page-description">
-            An example summary of grades across subjects.
-          </p>
+          <p className="page-description">Your average across recorded grades.</p>
         </div>
 
-        <p className="sample-note average-sample-note">
-          Sample preview only. This is an unweighted arithmetic mean of
-          illustrative grades, not a live student average. The grading scale,
-          weighting, and rounding rules have not been set.
-        </p>
-
-        <section className="average-summary" aria-label="Sample average result">
-          <span className="average-summary-label">SAMPLE AVERAGE</span>
-          <strong className="average-value">{sampleAverage.toFixed(1)}</strong>
-          <span className="average-summary-caption">
-            From {sampleGrades.length} sample grades
-          </span>
-        </section>
-
-        <section className="average-breakdown" aria-labelledby="breakdown-title">
-          <h2 id="breakdown-title">Grades included in this example</h2>
-          <ul className="average-grade-list">
-            {sampleGrades.map((item) => (
-              <li className="average-grade-item" key={item.code}>
-                <span className="average-grade-subject">
-                  <span className="subject-code">{item.code}</span>
-                  <span className="subject-name">{item.subject}</span>
-                </span>
-                <span className="average-grade-value">{item.grade}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+        {isLoading && <p role="status">Calculating your average…</p>}
+        {error && <p className="sample-note" role="alert">{error}</p>}
+        {!isLoading && !error && (
+          <section className="average-summary" aria-label="Your average result">
+            <span className="average-summary-label">CURRENT AVERAGE</span>
+            <strong className="average-value">
+              {average === null ? "—" : Number(average).toFixed(2)}
+            </strong>
+            <span className="average-summary-caption">
+              {gradeCount === 0 ? "No grades recorded" : `Calculated from ${gradeCount} grades`}
+            </span>
+          </section>
+        )}
       </section>
       <footer className="page-footer">Simple Grade Management System</footer>
     </main>

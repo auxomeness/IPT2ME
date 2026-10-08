@@ -702,3 +702,70 @@ h1 {
     transition-duration: 0.01ms !important;
   }
 }
+.portal-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 0;
+}
+
+.portal-navigation-user {
+  color: var(--muted, #667085);
+  font-size: 0.9rem;
+}
+
+.portal-navigation-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.portal-navigation-links button,
+.subject-search button {
+  border: 1px solid #d0d5dd;
+  border-radius: 0.6rem;
+  background: #fff;
+  color: #344054;
+  cursor: pointer;
+  font: inherit;
+  padding: 0.6rem 0.85rem;
+}
+
+.portal-navigation-links button:hover,
+.subject-search button:hover {
+  background: #f2f4f7;
+}
+
+.subject-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.subject-search input {
+  flex: 1 1 16rem;
+  min-width: 0;
+  border: 1px solid #d0d5dd;
+  border-radius: 0.6rem;
+  font: inherit;
+  padding: 0.7rem 0.85rem;
+}
+
+.subject-instructor {
+  color: #667085;
+  display: block;
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 640px) {
+  .portal-navigation {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-inline: 1rem;
+  }
+}

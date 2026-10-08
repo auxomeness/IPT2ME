@@ -7,5 +7,13 @@ export function createSubjectService(database) {
     findById(id) {
       return subjects.findById(id);
     },
+
+    list() {
+      return subjects.list();
+    },
+
+    search(searchTerm) {
+      return subjects.search(searchTerm);
+    },
   };
 }

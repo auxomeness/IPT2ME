@@ -1,19 +1,31 @@
+import { sendError, sendSuccess } from "../utils/apiResponse.js";
+
 export function createGetSubjectController(subjectService) {
   return function getSubject(request, response, next) {
     try {
       const subject = subjectService.findById(request.subjectId);
 
       if (!subject) {
-        return response.status(404).json({
-          success: false,
-          message: "Subject not found",
-        });
+        return sendError(response, 404, "Subject not found");
       }
 
-      return response.status(200).json({
-        success: true,
+      return sendSuccess(response, subject, {
         message: "Subject retrieved successfully",
-        data: subject,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  };
+}
+
+export function createListSubjectsController(subjectService) {
+  return function listSubjects(request, response, next) {
+    try {
+      const subjects = request.query.q
+        ? subjectService.search(request.query.q.trim())
+        : subjectService.list();
+      return sendSuccess(response, subjects, {
+        message: "Subjects retrieved successfully",
       });
     } catch (error) {
       return next(error);

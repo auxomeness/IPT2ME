@@ -29,12 +29,13 @@ export function createStudentAuthenticator(jwtSecret) {
       typeof payload.sub !== "string" ||
       !/^[1-9]\d*$/.test(payload.sub) ||
       !Number.isSafeInteger(Number(payload.sub)) ||
-      typeof payload.exp !== "number"
+      typeof payload.exp !== "number" ||
+      !["student", "instructor", "admin"].includes(payload.role)
     ) {
       return sendError(response, 401, "Invalid or expired token");
     }
 
-    request.user = { id: Number(payload.sub) };
+    request.user = { id: Number(payload.sub), role: payload.role };
     return next();
   };
 }

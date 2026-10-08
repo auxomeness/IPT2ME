@@ -1,8 +1,8 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 export class ApiError extends Error {
   constructor(status, responseBody) {
-    super(`API request failed with status ${status}`);
+    super(responseBody?.message || `API request failed with status ${status}`);
     this.name = "ApiError";
     this.status = status;
     this.responseBody = responseBody;
@@ -10,10 +10,6 @@ export class ApiError extends Error {
 }
 
 export async function apiRequest(path, options = {}) {
-  if (!API_BASE_URL) {
-    throw new Error("VITE_API_URL is not configured.");
-  }
-
   if (typeof path !== "string" || path.trim() === "") {
     throw new TypeError("An API path is required.");
   }
@@ -50,4 +46,39 @@ export async function apiRequest(path, options = {}) {
   }
 
   return responseBody;
+}
+
+function authenticatedOptions(token, options = {}) {
+  return {
+    ...options,
+    headers: {
+      ...options.headers,
+      Authorization: `Bearer ${token}`,
+    },
+  };
+}
+
+export async function loginStudent(credentials) {
+  return apiRequest("/login", { method: "POST", body: credentials });
+}
+
+export async function getSubjects(token, search = "") {
+  const query = search.trim()
+    ? `?q=${encodeURIComponent(search.trim())}`
+    : "";
+  return apiRequest(`/subjects${query}`, authenticatedOptions(token));
+}
+
+export async function getStudentGrades(token, studentId) {
+  return apiRequest(
+    `/students/${encodeURIComponent(studentId)}/grades`,
+    authenticatedOptions(token),
+  );
+}
+
+export async function getStudentAverage(token, studentId) {
+  return apiRequest(
+    `/students/${encodeURIComponent(studentId)}/average`,
+    authenticatedOptions(token),
+  );
 }

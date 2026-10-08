@@ -8,6 +8,11 @@ import { errorHandler, notFoundHandler } from "./middleware/errorMiddleware.js";
 import { createStudentAuthenticator } from "./middleware/authMiddleware.js";
 import { createGradeAverageModel } from "./models/gradeAverageModel.js";
 import { createGradeModel } from "./models/gradeModel.js";
+import { StudentModel } from "./models/studentModel.js";
+import { SubjectModel } from "./models/Subject.js";
+import { StudentService } from "./services/studentService.js";
+import { createGradeService } from "./services/gradeService.js";
+import { createGradeRouter } from "./routes/gradeRoutes.js";
 import { createGradeAverageRouter } from "./routes/gradeAverageRoutes.js";
 import createRoutes from "./routes/routes.js";
 import { createGradeAverageService } from "./services/gradeAverageService.js";
@@ -25,8 +30,6 @@ const database = createDatabase(databasePath);
 
 app.use(cors({ origin: frontendOrigin }));
 app.use(express.json());
-app.use("/api", createRoutes(database));
-
 async function startServer() {
   let gradeDatabase;
 
@@ -35,9 +38,29 @@ async function startServer() {
     const gradeModel = createGradeModel(gradeDatabase);
     await gradeModel.initialize();
 
+    const students = new StudentModel(database);
+    const subjects = new SubjectModel(database);
+    const studentService = new StudentService(students, process.env.JWT_SECRET);
+    const authenticateStudent = createStudentAuthenticator(process.env.JWT_SECRET);
+    app.use(
+      "/api",
+      createRoutes(database, { studentService, authenticateStudent }),
+    );
+
+    const gradeService = createGradeService({
+      gradeModel,
+      gradeReferences: {
+        ensureStudentExists: async (id) => Boolean(students.findById(id)),
+        ensureSubjectExists: async (id) => Boolean(subjects.findById(id)),
+      },
+    });
+    app.use(
+      "/api",
+      createGradeRouter(gradeService, authenticateStudent),
+    );
+
     const gradeAverageModel = createGradeAverageModel(gradeDatabase);
     const gradeAverageService = createGradeAverageService(gradeAverageModel);
-    const authenticateStudent = createStudentAuthenticator(process.env.JWT_SECRET);
 
     app.use(
       "/api",

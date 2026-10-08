@@ -1,12 +1,26 @@
 import { useState } from "react";
 import "./App.css";
 
-export default function LoginPage({ onViewSubjects, onViewGrades, onViewAverage }) {
+export default function LoginPage({ onLogin }) {
   const [notice, setNotice] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    setNotice("Sign-in is not connected yet. Please try again later.");
+    setNotice("");
+    setIsSubmitting(true);
+    const formData = new FormData(event.currentTarget);
+
+    try {
+      await onLogin({
+        username: formData.get("username"),
+        password: formData.get("password"),
+      });
+    } catch (error) {
+      setNotice(error.message || "Unable to sign in. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -60,8 +74,10 @@ export default function LoginPage({ onViewSubjects, onViewGrades, onViewAverage 
               required
             />
 
-            <button type="submit">Sign in</button>
-            <p className="form-notice" role="status" aria-live="polite">
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Signing in…" : "Sign in"}
+            </button>
+            <p className="form-notice" role="alert" aria-live="polite">
               {notice}
             </p>
           </form>
@@ -72,15 +88,6 @@ export default function LoginPage({ onViewSubjects, onViewGrades, onViewAverage 
           Your academic progress, all in one place
         </footer>
       </section>
-      <button className="sample-link" type="button" onClick={onViewSubjects}>
-        View sample subjects
-      </button>
-      <button className="sample-link" type="button" onClick={onViewGrades}>
-        View sample grades
-      </button>
-      <button className="sample-link" type="button" onClick={onViewAverage}>
-        View sample average
-      </button>
       <p className="page-caption">Simple Grade Management System</p>
     </main>
   );
