@@ -175,6 +175,56 @@ h1 {
   line-height: 1.5;
 }
 
+.preview-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 15px 0 12px;
+  color: #98a39c;
+  font-size: 11px;
+}
+
+.preview-divider::before,
+.preview-divider::after {
+  height: 1px;
+  flex: 1;
+  background: #edf1ef;
+  content: "";
+}
+
+.preview-button,
+.grades-back-button {
+  border: 1px solid #dce8e0;
+  border-radius: 8px;
+  background: #fff;
+  color: #26724f;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.preview-button {
+  width: 100%;
+  min-height: 44px;
+}
+
+.preview-button-secondary {
+  margin-top: 9px;
+}
+
+.preview-button:hover,
+.grades-back-button:hover {
+  border-color: #b8d3c2;
+  background: #f5f9f6;
+}
+
+.preview-button:focus-visible,
+.grades-back-button:focus-visible {
+  outline: 3px solid rgb(54 129 94 / 25%);
+  outline-offset: 2px;
+}
+
 .login-footer {
   display: flex;
   min-height: 58px;
@@ -221,5 +271,297 @@ h1 {
   *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+.grades-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 8% 12%, rgb(222 239 230 / 54%), transparent 34%),
+    #f5f8f6;
+}
+
+.grades-topbar {
+  display: flex;
+  height: 76px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 max(28px, calc((100vw - 1040px) / 2));
+  border-bottom: 1px solid #e7eeea;
+  background: rgb(255 255 255 / 86%);
+}
+
+.grades-back-button {
+  min-height: 38px;
+  padding: 0 14px;
+}
+
+.grades-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #20352c;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.grades-brand-icon {
+  display: grid;
+  width: 35px;
+  height: 35px;
+  place-items: center;
+  border-radius: 10px;
+  background: #e8f4ed;
+  color: #26724f;
+}
+
+.grades-brand-icon svg {
+  width: 21px;
+  height: 21px;
+}
+
+.grades-portal-label {
+  color: #74827a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+}
+
+.grades-content {
+  width: min(100% - 40px, 900px);
+  margin: 0 auto;
+  padding: 66px 0 48px;
+}
+
+.grades-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 27px;
+}
+
+.grades-eyebrow {
+  margin: 0 0 9px;
+  color: #378262;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.grades-heading h1 {
+  margin: 0;
+  color: #20352c;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 700;
+  letter-spacing: -1.2px;
+  line-height: 1.2;
+}
+
+.grades-description {
+  margin: 10px 0 0;
+  color: #758179;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.grades-count {
+  display: flex;
+  min-width: 104px;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 18px;
+  border: 1px solid #e0ebe4;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.grades-count-number {
+  color: #26724f;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.grades-count-label {
+  margin-top: 4px;
+  color: #7b8980;
+  font-size: 11px;
+}
+
+.grades-sample-note {
+  margin: 0 0 12px;
+  color: #78857d;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.subjects-preview-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.subjects-preview-card {
+  display: flex;
+  min-height: 74px;
+  align-items: center;
+  gap: 15px;
+  padding: 14px 18px;
+  border: 1px solid #e6ede9;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 7px rgb(32 58 45 / 3%);
+}
+
+.subjects-preview-index {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border-radius: 10px;
+  background: #eef6f1;
+  color: #50836a;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.subjects-preview-details {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
+.subjects-preview-name {
+  overflow-wrap: anywhere;
+  color: #293a31;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.grades-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e6ede9;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 7px rgb(32 58 45 / 3%);
+}
+
+.grades-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.grades-table th,
+.grades-table td {
+  padding: 17px 20px;
+  border-bottom: 1px solid #edf1ef;
+  font-size: 13px;
+}
+
+.grades-table thead th {
+  background: #f8faf9;
+  color: #74827a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+}
+
+.grades-table tbody tr:last-child th,
+.grades-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.grades-table tbody th {
+  font-weight: 600;
+  text-align: left;
+}
+
+.grades-table tbody td {
+  color: #39483f;
+}
+
+.grades-subject-code {
+  color: #36805d;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.grade-column {
+  width: 120px;
+  text-align: right !important;
+}
+
+.grade-value {
+  display: inline-flex;
+  min-width: 48px;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  border: 1px solid #dcebe1;
+  border-radius: 8px;
+  background: #f0f7f2;
+  color: #26724f;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.grades-footer {
+  padding: 0 20px 24px;
+  color: #98a39c;
+  font-size: 11px;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .grades-topbar {
+    height: 66px;
+    padding: 0 20px;
+  }
+
+  .grades-content {
+    width: min(100% - 32px, 900px);
+    padding: 43px 0 34px;
+  }
+
+  .grades-heading {
+    align-items: center;
+  }
+
+  .grades-count {
+    min-width: 82px;
+    padding: 10px 12px;
+  }
+
+  .grades-table {
+    min-width: 500px;
+  }
+
+  .grades-table th,
+  .grades-table td {
+    padding: 15px 14px;
+  }
+
+  .grade-column {
+    width: 90px;
   }
 }
