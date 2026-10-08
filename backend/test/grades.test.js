@@ -6,18 +6,18 @@ import {
 } from "../src/validators/gradeValidator.js";
 
 describe("grade validation", () => {
-  it.each([0, -1.5, 1000])("accepts finite numeric grades: %s", (grade) => {
+  it.each([1, 1.5, 100])("accepts grades from 1 through 100: %s", (grade) => {
     expect(isValidGrade(grade)).toBe(true);
   });
 
-  it.each([undefined, null, "", "90", NaN, Infinity, -Infinity])(
+  it.each([undefined, null, "", "90", NaN, Infinity, -Infinity, 0, -1, 100.01, 101])(
     "rejects invalid grade values: %s",
     (grade) => {
       expect(isValidGrade(grade)).toBe(false);
     },
   );
 
-  it("returns a client error for a non-finite grade", () => {
+  it("returns a client error for a grade outside the accepted range", () => {
     const response = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn(),
@@ -29,7 +29,7 @@ describe("grade validation", () => {
     expect(response.status).toHaveBeenCalledWith(400);
     expect(response.json).toHaveBeenCalledWith({
       success: false,
-      message: "Grade must be a finite number",
+      message: "Grade must be a number between 1 and 100",
       data: null,
     });
     expect(next).not.toHaveBeenCalled();
@@ -45,9 +45,9 @@ describe("grade validation", () => {
 
     await expect(
       model.create({ student_id: 1, subject_id: 1, grade: NaN }),
-    ).rejects.toThrow("Grade must be a finite number");
+    ).rejects.toThrow("Grade must be a number between 1 and 100");
     await expect(model.update(1, Infinity)).rejects.toThrow(
-      "Grade must be a finite number",
+      "Grade must be a number between 1 and 100",
     );
     expect(database.run).not.toHaveBeenCalled();
   });

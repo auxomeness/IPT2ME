@@ -1,7 +1,12 @@
 import { sendError } from "../utils/apiResponse.js";
 
 export function isValidGrade(grade) {
-  return typeof grade === "number" && Number.isFinite(grade);
+  return (
+    typeof grade === "number" &&
+    Number.isFinite(grade) &&
+    grade >= 1 &&
+    grade <= 100
+  );
 }
 
 export function validateGradeInput(request, response, next) {
@@ -10,7 +15,7 @@ export function validateGradeInput(request, response, next) {
     return sendError(response, 400, "Grade is required");
   }
   if (!isValidGrade(grade)) {
-    return sendError(response, 400, "Grade must be a finite number");
+    return sendError(response, 400, "Grade must be a number between 1 and 100");
   }
   return next();
 }

@@ -7,7 +7,7 @@ A prototype for students to sign in and view their subjects, grades, and average
 - **Student accounts and authentication:** Login uses a username and password. Passwords are stored as bcrypt hashes. Successful login returns a one-hour bearer token. There is no public registration endpoint; trusted project staff provision accounts and assign roles.
 - **Student listing:** `GET /api/students` requires a valid token and the `student` role.
 - **Subjects:** Users can list subjects, search by name/instructor/section, and retrieve one subject by ID. Subject records require a name, instructor, and section.
-- **Grades:** Instructor and admin roles can create and update grades. Authenticated students can view their own grades; instructors and admins can view any student's grades. Grade values must be finite numbers. The grading scale has not been defined.
+- **Grades:** Instructor and admin roles can create and update grades. Authenticated students can view their own grades; instructors and admins can view any student's grades. Grades must be numeric values from 1 through 100, inclusive.
 - **Average:** The API calculates the arithmetic mean of a student's recorded grades, rounded to two decimal places. If there are no grades, it returns a null average and a count of zero.
 - **API responses:** Responses use `{ "success": true|false, "message": "...", "data": ... }`. Errors have `data: null`.
 - **Frontend:** The UI provides login, subject browsing/search, grades, and average views, connected to the backend API.

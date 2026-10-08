@@ -64,12 +64,41 @@ export function createGradeModel(database) {
         subject_id INTEGER NOT NULL,
         grade REAL NOT NULL CHECK (
           typeof(grade) IN ('integer', 'real')
-          AND grade <= 1.7976931348623157e308
-          AND grade >= -1.7976931348623157e308
+          AND grade >= 1
+          AND grade <= 100
         ),
         FOREIGN KEY (student_id) REFERENCES students(id),
         FOREIGN KEY (subject_id) REFERENCES subjects(id)
       )`,
+    );
+
+    const invalidGrade = await get(
+      database,
+      "SELECT id FROM grades WHERE grade < 1 OR grade > 100 LIMIT 1",
+    );
+    if (invalidGrade) {
+      throw new Error(
+        `Existing grade ${invalidGrade.id} is outside the allowed 1–100 range and must be corrected before startup`,
+      );
+    }
+
+    await run(
+      database,
+      `CREATE TRIGGER IF NOT EXISTS grades_grade_range_insert
+       BEFORE INSERT ON grades
+       WHEN NEW.grade < 1 OR NEW.grade > 100
+       BEGIN
+         SELECT RAISE(ABORT, 'Grade must be a number between 1 and 100');
+       END`,
+    );
+    await run(
+      database,
+      `CREATE TRIGGER IF NOT EXISTS grades_grade_range_update
+       BEFORE UPDATE OF grade ON grades
+       WHEN NEW.grade < 1 OR NEW.grade > 100
+       BEGIN
+         SELECT RAISE(ABORT, 'Grade must be a number between 1 and 100');
+       END`,
     );
   }
 
@@ -125,6 +154,6 @@ export function createGradeModel(database) {
 
 function assertValidGrade(grade) {
   if (!isValidGrade(grade)) {
-    throw new TypeError("Grade must be a finite number");
+    throw new TypeError("Grade must be a number between 1 and 100");
   }
 }
