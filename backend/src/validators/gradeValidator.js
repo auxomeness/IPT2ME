@@ -33,3 +33,18 @@ export function validateCreateGradeInput(request, response, next) {
 
   return validateGradeInput(request, response, next);
 }
+
+export function validateGradeIdParam(request, response, next) {
+  const id = Number(request.params.id);
+
+  if (!/^\d+$/.test(request.params.id) || !Number.isSafeInteger(id) || id <= 0) {
+    return response.status(400).json({
+      success: false,
+      message: "Grade ID must be a positive integer",
+      errors: [],
+    });
+  }
+
+  request.validatedGradeId = id;
+  return next();
+}

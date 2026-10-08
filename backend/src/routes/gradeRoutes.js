@@ -1,7 +1,14 @@
 import { Router } from "express";
-import { createGradeController } from "../controllers/gradeController.js";
+import {
+  createGradeController,
+  createUpdateGradeController,
+} from "../controllers/gradeController.js";
 import { requireAuthenticatedUser } from "../middleware/authMiddleware.js";
-import { validateCreateGradeInput } from "../validators/gradeValidator.js";
+import {
+  validateCreateGradeInput,
+  validateGradeIdParam,
+  validateGradeInput,
+} from "../validators/gradeValidator.js";
 
 const GRADE_WRITER_ROLES = new Set(["instructor", "admin"]);
 
@@ -18,8 +25,12 @@ function requireGradeWriter(request, response, next) {
 }
 
 export function createGradeRouter(gradeService) {
-  if (!gradeService || typeof gradeService.createGrade !== "function") {
-    throw new TypeError("A grade service with createGrade() is required");
+  if (
+    !gradeService ||
+    typeof gradeService.createGrade !== "function" ||
+    typeof gradeService.updateGrade !== "function"
+  ) {
+    throw new TypeError("A grade service with createGrade() and updateGrade() is required");
   }
 
   const router = Router();
@@ -30,6 +41,15 @@ export function createGradeRouter(gradeService) {
     requireGradeWriter,
     validateCreateGradeInput,
     createGradeController(gradeService),
+  );
+
+  router.put(
+    "/grades/:id",
+    requireAuthenticatedUser,
+    requireGradeWriter,
+    validateGradeIdParam,
+    validateGradeInput,
+    createUpdateGradeController(gradeService),
   );
 
   return router;

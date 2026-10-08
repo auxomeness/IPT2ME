@@ -24,5 +24,9 @@ export function createGradeService({ gradeModel, gradeReferences }) {
 
       return gradeModel.create({ student_id, subject_id, grade });
     },
+
+    async updateGrade(id, grade) {
+      return gradeModel.update(id, grade);
+    },
   });
 }

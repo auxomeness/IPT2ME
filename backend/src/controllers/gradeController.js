@@ -27,3 +27,34 @@ export function createGradeController(gradeService) {
     }
   };
 }
+
+export function createUpdateGradeController(gradeService) {
+  return async function handleUpdateGrade(request, response) {
+    try {
+      const grade = await gradeService.updateGrade(
+        request.validatedGradeId,
+        request.body.grade,
+      );
+
+      if (!grade) {
+        return response.status(404).json({
+          success: false,
+          message: "Grade not found",
+          errors: [],
+        });
+      }
+
+      return response.status(200).json({
+        success: true,
+        message: "Grade updated",
+        data: grade,
+      });
+    } catch (error) {
+      return response.status(500).json({
+        success: false,
+        message: "Unable to update grade",
+        errors: [],
+      });
+    }
+  };
+}
