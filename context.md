@@ -80,6 +80,11 @@ Do not invent these details when implementing a task. Ask the team or use an exp
 - Average calculation rules, including rounding and how missing grades are handled.
 - Which authenticated users may create or update grades and what authorization checks apply.
 
+## Subject information validation (SUB-BE-04)
+
+- `name`, `instructor`, and `section` are required non-empty strings.
+- Surrounding whitespace is trimmed before downstream handlers receive the subject data. No arbitrary maximum lengths are imposed.
+
 ## Guidance for coding agents
 
 1. Read this file and inspect the existing code before making changes.
