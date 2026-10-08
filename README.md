@@ -43,7 +43,6 @@ IPT2ME/
 │   ├── index.html
 │   ├── vite.config.js
 │   └── package.json
-├── context.md                # Team tickets, decisions, and API conventions
 ├── package.json              # npm workspaces and shared commands
 ├── package-lock.json
 ├── eslint.config.js
@@ -94,38 +93,25 @@ Edit `backend/.env` and replace `JWT_SECRET` with a private random value of at l
 
 The frontend defaults to `http://localhost:3000/api`. To change that URL, copy `frontend/.env.example` to `frontend/.env` and set `VITE_API_URL`.
 
-### Create a local account
+### Seed local demo data
 
-There is intentionally no public registration endpoint or seeded account. Create accounts from trusted local code. For a one-time local instructor account, run this from the repository root after configuring `backend/.env` (replace the example username and password):
+There is no public registration endpoint. From the repository root, run:
 
 ```bash
-cd backend
-USERNAME='instructor1' PASSWORD='change-this-password' ROLE='instructor' node --input-type=module <<'EOF'
-import "dotenv/config";
-import path from "node:path";
-import { createDatabase } from "./src/db/connection.js";
-import { StudentModel } from "./src/models/studentModel.js";
-
-const databasePath = process.env.DATABASE_PATH
-  ? path.resolve(process.cwd(), process.env.DATABASE_PATH)
-  : path.resolve("data/grades.db");
-const database = createDatabase(databasePath);
-
-try {
-  const account = await new StudentModel(database).create(
-    process.env.USERNAME,
-    process.env.PASSWORD,
-    process.env.ROLE || "student",
-  );
-  console.log(`Created ${account.role} account: ${account.username}`);
-} finally {
-  database.close();
-}
-EOF
-cd ..
+npm run seed
 ```
 
-Use `ROLE='student'`, `ROLE='instructor'`, or `ROLE='admin'`. Store the account credentials securely. The role is assigned only by this trusted provisioning step, not by the login form.
+This creates or refreshes three local mock accounts, one sample subject, and one grade in `backend/data/grades.db`. The command is safe to run again; it avoids duplicate sample subjects and grades.
+
+Mock accounts for local use:
+
+| Role | Username | Password |
+| --- | --- | --- |
+| Student | `demo.student` | `StudentDemo2026!` |
+| Instructor | `demo.instructor` | `InstructorDemo2026!` |
+| Admin | `demo.admin` | `AdminDemo2026!` |
+
+Sign in at [http://localhost:5173](http://localhost:5173) with the student account. The seeder resets these reserved mock accounts to the credentials above. It is for local development only and must not be used with production data.
 
 ### Start the application
 
@@ -144,6 +130,7 @@ To run one workspace by itself, use `npm run dev --workspace backend` or `npm ru
 | Command | Description |
 | --- | --- |
 | `npm run dev` | Start backend and frontend together |
+| `npm run seed` | Create or refresh local mock accounts and sample data |
 | `npm run lint` | Lint the project |
 | `npm test` | Run backend and frontend test commands |
 | `npm run build` | Check backend syntax and create the frontend production build |
@@ -152,4 +139,3 @@ To run one workspace by itself, use `npm run dev --workspace backend` or `npm ru
 
 - Keep HTTP handling in controllers, business rules in services, persistence in models, and request checks in validators.
 - Keep secrets in local `.env` files; do not commit those files or real credentials.
-- See [context.md](context.md) for the original developer tickets, access decisions, and open grading/account policy questions.
