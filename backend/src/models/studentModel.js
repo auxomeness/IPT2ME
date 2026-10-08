@@ -1,3 +1,8 @@
+import bcrypt from "bcryptjs";
+
+const BCRYPT_ROUNDS = 12;
+const MAX_PASSWORD_BYTES = 72;
+
 export class StudentModel {
   constructor(database) {
     this.insertStatement = database.prepare(
@@ -14,7 +19,15 @@ export class StudentModel {
     );
   }
 
-  create(username, passwordHash) {
+  async create(username, password) {
+    if (typeof password !== "string" || password.length === 0) {
+      throw new TypeError("Password is required");
+    }
+    if (Buffer.byteLength(password, "utf8") > MAX_PASSWORD_BYTES) {
+      throw new RangeError("Password must not exceed 72 UTF-8 bytes");
+    }
+
+    const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
     const result = this.insertStatement.run(username, passwordHash);
     return { id: Number(result.lastInsertRowid), username };
   }

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import bcrypt from "bcryptjs";
 import { afterEach, beforeEach, describe, it } from "vitest";
 import { createDatabase } from "../src/db/connection.js";
 import { StudentModel } from "../src/models/studentModel.js";
@@ -16,20 +17,27 @@ describe("StudentModel", () => {
     database.close();
   });
 
-  it("creates a student and retrieves it by id and username", () => {
-    const created = students.create("sam", "$2b$10$example-hash");
+  it("hashes the password before saving and retrieves the student by id and username", async () => {
+    const created = await students.create("sam", "correct horse battery staple");
+    const storedById = students.findById(created.id);
+    const storedByUsername = students.findByUsername("sam");
 
     assert.deepEqual(created, { id: 1, username: "sam" });
-    assert.deepEqual(students.findById(created.id), {
+    assert.deepEqual(storedById, {
       id: 1,
       username: "sam",
-      password_hash: "$2b$10$example-hash"
+      password_hash: storedById.password_hash
     });
-    assert.deepEqual(students.findByUsername("sam"), {
+    assert.deepEqual(storedByUsername, {
       id: 1,
       username: "sam",
-      password_hash: "$2b$10$example-hash"
+      password_hash: storedById.password_hash
     });
+    assert.notEqual(storedById.password_hash, "correct horse battery staple");
+    assert.equal(
+      await bcrypt.compare("correct horse battery staple", storedById.password_hash),
+      true
+    );
   });
 
   it("returns no record for an unknown student", () => {
@@ -37,9 +45,9 @@ describe("StudentModel", () => {
     assert.equal(students.findByUsername("missing"), undefined);
   });
 
-  it("lists safe student records without password hashes", () => {
-    students.create("sam", "hash-one");
-    students.create("lee", "hash-two");
+  it("lists safe student records without password hashes", async () => {
+    await students.create("sam", "password-one");
+    await students.create("lee", "password-two");
 
     assert.deepEqual(students.list(), [
       { id: 1, username: "sam" },
@@ -47,9 +55,19 @@ describe("StudentModel", () => {
     ]);
   });
 
-  it("enforces unique usernames in SQLite", () => {
-    students.create("sam", "hash-one");
+  it("enforces unique usernames in SQLite", async () => {
+    await students.create("sam", "password-one");
 
-    assert.throws(() => students.create("sam", "hash-two"), /UNIQUE constraint failed/);
+    await assert.rejects(
+      students.create("sam", "password-two"),
+      /UNIQUE constraint failed/
+    );
+  });
+
+  it("rejects passwords longer than bcrypt's supported input size", async () => {
+    await assert.rejects(
+      students.create("sam", "x".repeat(73)),
+      /72 UTF-8 bytes/
+    );
   });
 });
