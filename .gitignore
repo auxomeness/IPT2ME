@@ -4,5 +4,6 @@ coverage/
 .env
 .env.*
 !.env.example
+backend/data/
 .DS_Store
 npm-debug.log*

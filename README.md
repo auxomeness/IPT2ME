@@ -1,6 +1,6 @@
 # IPT2ME
 
-An npm workspace starter for the Simple Grade Management System. It uses an Express backend and React + Vite frontend, written in JavaScript. It provides the project structure and basic startup configuration without sample routes, business logic, database models, or demo UI. MongoDB is optional. See [context.md](context.md) for the team assignments and project decisions.
+An npm workspace for the Simple Grade Management System. It uses an Express backend and React + Vite frontend, written in JavaScript. See [context.md](context.md) for the team assignments and project decisions.
 
 ## Requirements
 
@@ -45,9 +45,17 @@ npm ci
 npm run dev
 ```
 
-The backend runs at `http://localhost:3000`; the Vite app runs at `http://localhost:5173`. No API routes or frontend screens are included yet; add your features in the provided structure.
+The backend runs at `http://localhost:3000`; the Vite app runs at `http://localhost:5173`. The student login API is available at `POST /api/students/login`.
 
-Environment files are optional for local defaults. To customize settings, copy `backend/.env.example` to `backend/.env` and `frontend/.env.example` to `frontend/.env` (PowerShell: use `Copy-Item backend/.env.example backend/.env` and `Copy-Item frontend/.env.example frontend/.env`).
+The backend requires a private `JWT_SECRET` of at least 32 bytes. Copy `backend/.env.example` to `backend/.env` and replace the sample secret before starting the backend (PowerShell: `Copy-Item backend/.env.example backend/.env`). The SQLite database is initialized automatically; existing records are preserved.
+
+### Student login API
+
+`POST /api/students/login` accepts JSON containing `username` and `password`.
+On success, it returns a signed one-hour JWT and the student's ID and username.
+Invalid credentials receive the same generic `401` response, and password
+hashes are never returned. Student records must already exist in the SQLite
+database with a bcrypt password hash; this endpoint does not register students.
 
 ### If `npm ci` fails
 

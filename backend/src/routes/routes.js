@@ -1,7 +1,12 @@
 import { Router } from "express";
+import { createStudentController } from "../controllers/studentController.js";
+import { validateLogin } from "../validators/loginValidator.js";
 
-const router = Router();
+export default function createRoutes({ studentService }) {
+  const router = Router();
+  const studentController = createStudentController(studentService);
 
-// TODO: Define API routes here and connect them to their controllers.
+  router.post("/students/login", validateLogin, studentController.login);
 
-export default router;
+  return router;
+}

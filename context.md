@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Build a simple system where students can log in, see their subjects and grades, and review their average. The frontend communicates with backend APIs. MongoDB is an optional database; do not make database availability a requirement unless the team decides to use it.
+Build a simple system where students can log in, see their subjects and grades, and review their average. The frontend communicates with backend APIs and SQLite stores application data.
 
 ## Team and ownership
 
@@ -52,28 +52,28 @@ The team has five developers: one frontend developer and four backend developers
 
 - **Backend:** Node.js with Express, written in JavaScript ES modules.
 - **Frontend:** React with JavaScript and Vite.
-- **Database:** MongoDB may be used, but is optional. Keep the app able to run without a database until the team opts in.
+- **Database:** SQLite, using `better-sqlite3`.
 - **Backend organization:** `backend/src/server.js` starts Express; `routes/` maps API paths; `validators/` checks request data; `controllers/` handles HTTP input/output; `services/` holds business logic; `models/` contains persistence models when needed.
 - **Frontend entry:** `frontend/src/main.jsx` mounts the app and `frontend/src/App.jsx` is the root component.
 - **Development workflow:** npm workspaces; use the root commands `npm run dev`, `npm run lint`, `npm test`, and `npm run build`.
 
-The backend files currently contain minimal JavaScript scaffolding and TODOs. Add feature behavior in the appropriate layer. Keep the frontend and backend in their assigned ownership areas and coordinate API contracts between developers.
+The backend has the student login endpoint and SQLite connection in place. Other feature areas may still contain scaffolding and TODOs. Add behavior in the appropriate layer, keep the frontend and backend in their assigned ownership areas, and coordinate API contracts between developers.
 
 ## Feature dependencies and coordination
 
-- Frontend tasks depend on agreeing with backend developers on endpoint paths, request/response formats, login behavior, and how authentication is sent.
+- The frontend login integration should use `POST /api/students/login`, username/password JSON, and the returned JWT; coordinate token storage and subsequent authenticated requests with the backend team.
 - Student login, password hashing, and authentication (Developer 2) must coordinate with grade endpoint protection (Developer 5).
 - Grade creation, updates, value validation, and invalid-grade prevention (Developers 4 and 5) overlap and should share one agreed grading policy.
 - Subject listing, lookup, and search (Developer 3) should agree on search parameters and response shape with the frontend developer.
 - The API response format and error handling should be agreed across backend owners because Developer 5 owns standardization.
 
-## Decisions still to make
+## Login contract and decisions still to make
 
 Do not invent these details when implementing a task. Ask the team or use an explicitly approved project decision:
 
-- Whether MongoDB will be used; if so, connection setup, schemas, identifiers, and seed data.
-- Login request/response fields and authentication mechanism, token/session behavior, and token lifetime.
-- API route paths, HTTP status codes, response envelope, and error format.
+- Login is implemented at `POST /api/students/login` with username/password credentials, a one-hour JWT, and the `{ success, message, data }` success envelope. Invalid credentials return a generic `401` response.
+- Coordinate the final error-envelope convention with Developer 5.
+- API route paths, HTTP status codes, and response format for the remaining features.
 - Student listing access rules and whether listing is required by the student-facing UI.
 - Subject search fields, matching behavior, and pagination, if needed.
 - Allowed grade scale, accepted value format, and rules for invalid or missing grades.
