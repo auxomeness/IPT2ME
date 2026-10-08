@@ -17,3 +17,23 @@ export function validateGradeInput(request, response, next) {
 
   return next();
 }
+
+export function validateStudentIdParam(request, response, next) {
+  const studentId = request.params.studentId;
+  const parsedStudentId = Number(studentId);
+
+  if (
+    !/^\d+$/.test(studentId) ||
+    !Number.isSafeInteger(parsedStudentId) ||
+    parsedStudentId <= 0
+  ) {
+    return response.status(400).json({
+      success: false,
+      message: "studentId must be a positive integer",
+      errors: [],
+    });
+  }
+
+  request.validatedStudentId = parsedStudentId;
+  return next();
+}
